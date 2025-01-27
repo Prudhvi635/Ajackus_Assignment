@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # User Management Application
 
 ## Project Setup
@@ -19,3 +20,6 @@
 2. **Improvement**: Implement client-side validation before submitting forms.
 3. **Improvement**: Add pagination to handle large datasets.
 
+=======
+# Ajackus_Assignment
+>>>>>>> 236fad47fffc2c1040224af3c3b7027f7b5b74e9
