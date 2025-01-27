@@ -1,0 +1,229 @@
+/* Form Container */
+.user-form {
+  background: linear-gradient(to bottom right, #ffffff, #f8f9fa);
+  padding: 30px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  max-width: 800px;
+  margin: 0 auto 25px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Form Header */
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.form-header h2 {
+  margin: 0;
+  color: #2d3748;
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+/* Close Button */
+.close-button {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #718096;
+  padding: 8px;
+  border-radius: 50%;
+  line-height: 0.8;
+  transition: all 0.2s ease;
+}
+
+.close-button:hover {
+  color: #e53e3e;
+  background-color: rgba(229, 62, 62, 0.1);
+  transform: rotate(90deg);
+}
+
+/* Form Layout */
+.form-row {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.form-column {
+  flex: 1;
+  min-width: 0; /* Prevents flex items from overflowing */
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+/* Labels */
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #4a5568;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+}
+
+/* Inputs */
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.2s ease;
+  color: #2d3748;
+  background-color: white;
+}
+
+.form-input::placeholder {
+  color: #a0aec0;
+}
+
+.form-input:hover {
+  border-color: #cbd5e0;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+  background-color: #fff;
+}
+
+.form-input:disabled {
+  background-color: #edf2f7;
+  cursor: not-allowed;
+  color: #718096;
+  border-color: #e2e8f0;
+}
+
+/* Submit Button */
+.submit-button {
+  padding: 12px 24px;
+  background: linear-gradient(to right, #4299e1, #3182ce);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(66, 153, 225, 0.1);
+  letter-spacing: 0.3px;
+  width: auto;
+  min-width: 140px;
+}
+
+.submit-button:hover {
+  background: linear-gradient(to right, #3182ce, #2c5282);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 8px rgba(66, 153, 225, 0.2);
+}
+
+.submit-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(66, 153, 225, 0.1);
+}
+
+.submit-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.3);
+}
+
+/* Error States */
+.form-input.error {
+  border-color: #fc8181;
+  background-color: #fff5f5;
+}
+
+.form-input.error:focus {
+  box-shadow: 0 0 0 3px rgba(252, 129, 129, 0.2);
+}
+
+.error-message {
+  color: #e53e3e;
+  font-size: 0.875rem;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Success States */
+.form-input.success {
+  border-color: #48bb78;
+}
+
+.form-input.success:focus {
+  box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.2);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .user-form {
+    padding: 20px;
+    margin: 0 15px 25px;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .form-column {
+    width: 100%;
+  }
+
+  .form-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .submit-button {
+    width: 100%;
+  }
+}
+
+/* Animation for form appearance */
+@keyframes formFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.user-form {
+  animation: formFadeIn 0.3s ease-out;
+}
+
+/* Optional: Add custom scrollbar */
+.user-form {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f7fafc;
+}
+
+.user-form::-webkit-scrollbar {
+  width: 8px;
+}
+
+.user-form::-webkit-scrollbar-track {
+  background: #f7fafc;
+}
+
+.user-form::-webkit-scrollbar-thumb {
+  background-color: #cbd5e0;
+  border-radius: 4px;
+}
