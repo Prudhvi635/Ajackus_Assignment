@@ -6,8 +6,6 @@ import "./App.css";
 
 const API_URL = "https://jsonplaceholder.typicode.com/users";
 
-
-
 const App = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,6 +36,7 @@ const App = () => {
         lastName: user.name.split(" ")[1] || "",
         email: user.email,
         department: user.company.name,
+        isApiUser: true, // Flag to identify users from API
       }));
       setUsers(transformedData);
     } catch (err) {
@@ -66,33 +65,51 @@ const App = () => {
     }
 
     try {
-      const method = currentUser ? "PUT" : "POST";
-      const url = currentUser ? `${API_URL}/${currentUser.id}` : API_URL;
-
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok)
-        throw new Error(`Failed to ${currentUser ? "update" : "create"} user`);
-
       if (currentUser) {
-        setUsers(
-          users.map((user) =>
-            user.id === currentUser.id
-              ? { ...formData, id: currentUser.id }
-              : user
-          )
-        );
+        // If it's an API user, attempt API update
+        if (currentUser.isApiUser) {
+          const response = await fetch(`${API_URL}/${currentUser.id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id: currentUser.id,
+              name: `${formData.firstName} ${formData.lastName}`,
+              email: formData.email,
+              company: {
+                name: formData.department
+              }
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to update user");
+          }
+        }
+        
+        // Update local state regardless of API status
+        setUsers(users.map((user) =>
+          user.id === currentUser.id
+            ? { 
+                ...formData, 
+                id: currentUser.id,
+                isApiUser: currentUser.isApiUser 
+              }
+            : user
+        ));
       } else {
-        const newId = Math.max(...users.map((u) => u.id)) + 1;
-        setUsers([...users, { ...formData, id: newId }]);
+        // Creating new user
+        const newId = Math.max(...users.map((u) => u.id), 0) + 1;
+        const newUser = { 
+          ...formData, 
+          id: newId,
+          isApiUser: false // Mark manually created users
+        };
+        setUsers([...users, newUser]);
       }
 
+      // Reset form state
       setShowForm(false);
       setCurrentUser(null);
       setFormData({
@@ -102,6 +119,7 @@ const App = () => {
         email: "",
         department: "",
       });
+      setError(null);
     } catch (err) {
       setError(err.message);
     }
@@ -109,18 +127,32 @@ const App = () => {
 
   const handleEdit = (user) => {
     setCurrentUser(user);
-    setFormData(user);
+    setFormData({
+      ...user,
+      id: user.id.toString()
+    });
     setShowForm(true);
+    setError(null);
   };
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
-        method: "DELETE",
-      });
+      const userToDelete = users.find(user => user.id === id);
+      
+      // Only make API call if it's an API user
+      if (userToDelete.isApiUser) {
+        const response = await fetch(`${API_URL}/${id}`, {
+          method: "DELETE",
+        });
 
-      if (!response.ok) throw new Error("Failed to delete user");
+        if (!response.ok) {
+          throw new Error("Failed to delete user");
+        }
+      }
+
+      // Update local state regardless of API status
       setUsers(users.filter((user) => user.id !== id));
+      setError(null);
     } catch (err) {
       setError(err.message);
     }
@@ -128,52 +160,54 @@ const App = () => {
 
   return (
     <ErrorBoundary>
-    <div className="container">
-      <div className="header">
-        <h1>User Management System</h1>
-        <button
-          onClick={() => {
-            setShowForm(true);
-            setCurrentUser(null);
-            setFormData({
-              id: "",
-              firstName: "",
-              lastName: "",
-              email: "",
-              department: "",
-            });
-          }}
-        >
-          Add User
-        </button>
-      </div>
-
-      {error && (
-        <div className="error">
-          {error}
-          <button onClick={() => setError(null)}>
-            ×
+      <div className="container">
+        <div className="header">
+          <h1>User Management System</h1>
+          <button
+            onClick={() => {
+              setShowForm(true);
+              setCurrentUser(null);
+              setFormData({
+                id: "",
+                firstName: "",
+                lastName: "",
+                email: "",
+                department: "",
+              });
+              setError(null);
+            }}
+          >
+            Add User
           </button>
         </div>
-      )}
 
-      {showForm && (
-        <UserForm
-          onSubmit={handleSubmit}
-          onClose={() => setShowForm(false)}
-          currentUser={currentUser}
-          formData={formData}
-          setFormData={setFormData}
-        />
-      )}
+        {error && (
+          <div className="error">
+            {error}
+            <button onClick={() => setError(null)}>×</button>
+          </div>
+        )}
 
-      {loading ? (
-        <div>Loading...</div>
-      ) : (
-        <UserList users={users} onEdit={handleEdit} onDelete={handleDelete} />
-      )}
-    </div>
-    </ErrorBoundary>  
+        {showForm && (
+          <UserForm
+            onSubmit={handleSubmit}
+            onClose={() => {
+              setShowForm(false);
+              setError(null);
+            }}
+            currentUser={currentUser}
+            formData={formData}
+            setFormData={setFormData}
+          />
+        )}
+
+        {loading ? (
+          <div>Loading...</div>
+        ) : (
+          <UserList users={users} onEdit={handleEdit} onDelete={handleDelete} />
+        )}
+      </div>
+    </ErrorBoundary>
   );
 };
 
